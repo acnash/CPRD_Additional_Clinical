@@ -15,4 +15,8 @@ resultDF <- getEntityValue("smoking", additionalFileList, idList)
 ```
 The `idList` is either a list where each entry is a patient ID or it is a vector of patient IDs. 
 
+The returned data frame will include clinical data linked to additional clinical data, as such (IDs removed & all dates fabricated). 
+
+![Image of smoking output](https://github.com/acnash/CPRD_Additional_Clinical/blob/master/smoking.PNG)
+
 Further information on how to use should be forth coming in an F1000 publication. 
