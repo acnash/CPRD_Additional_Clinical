@@ -8,6 +8,7 @@ However, bringing all of this information together is difficult and there are fe
 Instructions will follow, but essentially the user calls the getEntityValue() to yield a data frame of clinical and additional clinical records. For example:
 
 ```
+source("CPRDLookups.R")
 additionalFiles <- "C:\\Users\\yewro\\Documents\\CPRD_Raw_Data\\head_Extract_Additional"
 clinicalFiles <- "C:\\Users\\yewro\\Documents\\CPRD_Raw_Data\\Clinical"
 additionalFileList <- list(additional=additionalFiles, clinical=clinicalFiles)
