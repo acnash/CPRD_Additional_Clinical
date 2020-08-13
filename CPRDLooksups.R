@@ -152,6 +152,7 @@ getEntityData <- function(idList, entity, additionalDataDF) {
   return(patientDF)
 }
 
+#===============================================================================
 #' Returns the patient smoking status for patients. This looks for the value in data1
 #' column of the returned Additional data. 
 #' 
@@ -220,8 +221,6 @@ getSmokingData <- function(idList, additionalDataDF, clinicalDataDF) {
       indSmokingMatrix <- indSmokingMatrix[indSmokingMatrix[,c("adid")] %in% adidSubset, ]
     }
     
-    
-    
     tempIndClinicalDF <- as.data.frame(indClinicalMatrix)
     tempSmokingDF <- as.data.frame(indSmokingMatrix[,!(colnames(indSmokingMatrix) %in% c("patid","enttype","adid")),drop=FALSE])
     
@@ -234,12 +233,80 @@ getSmokingData <- function(idList, additionalDataDF, clinicalDataDF) {
   return(patientSmokingDF)
 }
 
+#===============================================================================
+#' Returns the patient BMI status and returns a weight in kilos, weight centile and a BMI.
+#' 
+#' The BMI/weight additional clinical data is combined with the clinical data of all those
+#' patients with a valid BMI/weight recording. The BMI/weight record is inline with the
+#' associated clinical data, therefore when the recording was taken is associated with
+#' a clinical event date. The associated clinical entry for a BMI reading is a medcode = 2 for
+#' "O/E - weight". 
+#'
+#' @param idList A vector or a list of patient ids.
+#' @param additionalDataDF The data frame of all patient clinical additional data. 
+#' @param clinicalDataDF The data frame of all patient clinical data.
+#'
+#' @return A data frame of the patient clinical data associated with weight along with 
+#' weight and BMI measurements. 
+#' @export
+#'
+#' @examples
+getBMIData <- function(idList, additionalDataDF, clinicalDataDF) {
+  #gets all the BMI related entity lines from the additional clinical data
+  patientBMIDT <- data.table::as.data.table(getEntityData(idList, BMI, additionalDataDF))
+  
+  patientBMIPatid <- getUniquePatidList(patientBMIDT)
+  
+  colnames(patientBMIDT) <- c("patid","enttype","adid","Weight_in_kilos","Weight_centile","BMI","data4","data5","data6","data7")
+  
+  #data1 column for the smoking status
+  patientBMIMatrix <- trimws(as.matrix(patientBMIDT))
+  cliniclDataMatrix <- trimws(as.matrix(clinicalDataDF))
+  counter <- 1
+  bmiDFList <- list()
+  for(i in 1:length(patientBMIPatid)) {
+    indBMIMatrix <- patientBMIMatrix[patientBMIMatrix[,c("patid")]==patientBMIPatid[[i]],,drop=FALSE]
+    indClinicalMatrix <- cliniclDataMatrix[cliniclDataMatrix[,c("patid")]==patientBMIPatid[[i]],,drop=FALSE]
+    indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("enttype")] == "13", ,drop=FALSE]
+    
+    if(nrow(indBMIMatrix)==0) {
+      print(paste("There is no additional clinical data for patient", patientSmokingPatid[[i]], "Skipping this patient."))
+      next()
+    }
+    
+    if(nrow(indClinicalMatrix)==0) {
+      print(paste("There is no clinical data for patient", patientBMIPatid[[i]], "Skipping this patient."))
+      next()
+    }
+    
+    if(nrow(indClinicalMatrix) != nrow(indBMIMatrix)) {
+      adidSubset <- indClinicalMatrix$adid
+      indBMIMatrix <- indBMIMatrix[indBMIMatrix[,c("adid")] %in% adidSubset, ]
+    }
+    
+    tempIndClinicalDF <- as.data.frame(indClinicalMatrix)
+    tempBMIDF <- as.data.frame(indBMIMatrix[,!(colnames(indBMIMatrix) %in% c("patid","enttype","adid")),drop=FALSE])
+    
+    bmiDF <- cbind(tempIndClinicalDF, tempBMIDF)
+    
+    bmiDFList[[counter]] <- bmiDF
+    counter <- counter + 1
+  }
+  patientBMIDF <- do.call(rbind, bmiDFList)
+  return(patientBMIDF)
+  
+  
+  
+}
+
 
 #' Returns the additional clinical data for a list of patients. 
 #'
 #' The function combines the entity, lookup data and adid from additional clinical data
 #' with the medical codes from the clinical records. All is returned as a coded data frame
 #' for each patient along all eventdate times.  
+#' 
+#' To view the latest lookup entity strings execute the function outputCurrentOutput()
 #'
 #' @param entityString To indicate the patient characteristic entity e.g., "smoking". A list can be 
 #' found at the top of this R script. This version only looks for one entity per function call.
@@ -254,6 +321,9 @@ getSmokingData <- function(idList, additionalDataDF, clinicalDataDF) {
 #' @export
 #'
 #' @examples
+#' additionalFileList <- list(additional=additionalFiles, clinical=clinicalFiles)
+#' idList <- c(getUniquePatidList(clinicalTriptanDF))
+#' resultDF <- getEntityValue("smoking", additionalFileList, idList)
 getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
   if(is.null(additionalFileList)) {
     print("Error: additionalFileList parameter of function getEntityValue is null. Returning NULL.")
@@ -273,9 +343,12 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
     return(NULL)
   }
   
-  if(entityString == "smoking") {
+  if(tolower(entityString) == "smoking") {
     resultDF <- getSmokingData(idList, additionalClinicalDataDF, clinicalDataDF) 
-  } else {
+  } else if(tolower(entityString) == "bmi") {
+    resultDF <- getBMIData(idList, additionalClinicalDataDF, clinicalDataDF) 
+  }
+  else {
     print("Unrecognised entity type. Try one of the following:")
     outputCurrentOutput()
     return(NULL)
