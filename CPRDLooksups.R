@@ -6,6 +6,110 @@
 #neceessarily those of the UK National Health Service, the NIHR, or the
 #UK Department of Health. 
 
+alcoholMedcodeDescriptionList <- list(
+  `Alcohol consumption`=27,
+  `non-drinker alcohol`=4447,
+  `Social drinker`=956,
+  `Drinks occasionally`=749,
+  `Drinks rarely`=385,
+  `Tee totaller`=12949,
+  `Light drinker - 1-2u/day`=12972,
+  `Trivial drinkers - <1u/day`=12975,
+  `Non drinker alcohol`=12970,
+  `Moderate drinker - 3-6u/day`=322,
+  `Alcohol consumption unknown`=12978,
+  `Current non-drinker`=12979,
+  `Suspect alcohol abuse - denied`=12976,
+  `Heavy drinker - 7-9u/day`=1618,
+  `Alcohol intake above recommended sensible limits`=12989,
+  `Spirit drinker`=12971,
+  `Alcohol units per week`=93415,
+  `Alcohol screen - AUDIT completed`=95663,
+  `Alcohol use disorders identification test`=94838,
+  `Light drinker`=12980,
+  `Beer drinker`=2689,
+  `Drinks wine`=12969,
+  `Binge drinker`=19401,
+  `Alcohol intake within recommended sensible limits`=26472,
+  `Alcohol problem drinker`=1399,
+  `Moderate drinker`=12985,
+  `Alcohol scren - fast alcohol screening test completed`=94963,
+  `Ex-light drinker - (1-2u/day)`=26471,
+  `Hazardous alcohol use`=19494,
+  `Health ed. - alcohol`=11491,
+  `Ex-heavy drinker (>9u/day)`=12983,
+  `Alcohol consumption NOS`=12981,
+  `Alcohol consumption screen`=9264,
+  `Alcohol units consumed on heaviest drinking day`=97126,
+  `Heavy drinker`=8999,
+  `Self-help advice leaflet given`=9570,
+  `Nondependent alcohol abuse`=7746,
+  `Alcohol screen - AUDIT completed` = 90714
+)
+
+bmiMedcodeDescriptionList <- list(
+  `O/E - weight`=2,
+  `O/E - underweight`=126,
+  `O/E - overweight`=2839,
+  `O/E - obese`=7984,
+  `Body Mass Index`=8105,
+  `O/E - weight 10-20% over ideal`=16404,
+  `O/E - weight NOS`=21520,
+  `O/E - weight within 10% ideal`=23376,
+  `O/E - weight 10-20% below ideal`=29029,
+  `O/E - weight > 20% over ideal`=32973
+)
+
+smokingMedcodeDescriptionList <- list(
+  `Health ed. - smoking`=2111,
+  `Smoker`=1823,
+  `Ex smoker`=90,
+  `Cigarette smoker`=93,
+  `Never smoked tobacco`=33,
+  `Non-smoker`=11788,
+  `Tobacco consumption`=54,
+  `Ex-moderate smoker (10-19/day)`=12955,
+  `Current smoker`=10558,
+  `Stopped smoking`=776,
+  `Heavy smoker - 20-39 cigs/day`=3568,
+  `Moderate smoker - 10-19 cigs/d`=1878,
+  `Ex-heavy smoker (20-39/day)`=12956,
+  `Smoking cessation advice`=7622,
+  `Trivial smoker - < 1 cig/day`=12958,
+  `Light smoker - 1-9 cigs/day`=12944,
+  `Ex-smoker - amount unknown`=12946,
+  `Very heavy smoker - 40+cigs/d`=1822,
+  `Occasional smoker`=12941,
+  `Trying to give up smoking`=12240,
+  `Ex-light smoker (1-9/day)`=12957,
+  `Rolls own cigarettes`=12945,
+  `Recently stopped smoking`=99838,
+  `Date ceased smoking`=12878,
+  `Smoking restarted`=12951,
+  `Smoker - amount smoked`=12942,
+  `Cigar smoker`=12943,
+  `Not interested in stopping smoking`=30762,
+  `Referral for smoking cessation service offered`=102361,
+  `Brief intervention for smoking cessation`=98137,
+  `Lifestyle advice regarding smoking`=18926,
+  `Smoking reduced`=12966,
+  `Ex-very heavy smoker (40+/day)`=12959,
+  `Keeps trying to stop smoking`=12964,
+  `Ready to stop smoking`=31114,
+  `Thinking about stopping smoking`=30423,
+  `Cigarette consumption`=12965,
+  `Tobacco consumption unknown`=12962,
+  `Negotiated date for cessation of smoking`=34126,
+  `Pipe smoker`=12947,
+  `Ex-cigarette smoker`=97210,
+  `Ex cigar smoker`=19488,
+  `Ex-trivial smoker (<1/day)`=12961,
+  `Stop smoking monitor.chck done`=19485,
+  `Passive smoking risk`=13350, 
+  `Tobacco consumption NOS`=12960,
+  `Passive smoker`=13351
+)
+
 
 BMI <- 13
 smoking <- 4
@@ -17,8 +121,8 @@ exercise <- 30
 
 #A list of search terms. Caps sensitive at the moment. 
 outputCurrentOutput <- function() {
-  print("BMI")
-  print("smoking")
+  print("BMI") #completed
+  print("smoking") #completed
   print("alcoholConsumption")
   print("hdlRatio")
   print("ethnicity")
@@ -26,6 +130,7 @@ outputCurrentOutput <- function() {
   print("exercise")
 }
 
+#===============================================================================
 #' Loads in the additional CPRD date (e.g., smoking) and returns a data frame
 #' from the additional clinical flat files for those patients requested. This function
 #' returns what data is available for those patients specified using the idList
@@ -76,7 +181,7 @@ getAdditionalCPRDData <- function(filePathVector, idList=NULL) {
   return(df)
 }
 
-
+#===============================================================================
 #' Return a data frame of all CPRD clinical data trimmed for the purpose of additional
 #' data (e.g., smoking) and filtered by patients of interest. 
 #'
@@ -130,6 +235,7 @@ getClinicalData <- function(filePathVector, idList=NULL) {
   return(df)
 }
 
+#===============================================================================
 #' This returns the additional information data frame given a patient list, the 
 #' additional information entity type and the additional information data frame. 
 #' 
@@ -270,7 +376,7 @@ getBMIData <- function(idList, additionalDataDF, clinicalDataDF) {
     indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("enttype")] == "13", ,drop=FALSE]
     
     if(nrow(indBMIMatrix)==0) {
-      print(paste("There is no additional clinical data for patient", patientSmokingPatid[[i]], "Skipping this patient."))
+      print(paste("There is no additional clinical data for patient", patientBMIPatid[[i]], "Skipping this patient."))
       next()
     }
     
@@ -294,12 +400,80 @@ getBMIData <- function(idList, additionalDataDF, clinicalDataDF) {
   }
   patientBMIDF <- do.call(rbind, bmiDFList)
   return(patientBMIDF)
-  
-  
-  
 }
 
+#===============================================================================
+#' Returns the patient alcohol consumption status, units per week and start/stop dates.
+#' 
+#' The alcohol consumption additional clinical data is combined with the clinical data of all those
+#' patients with a valid alcohol consumption clinical record. The alcohol consumption record is inline with the
+#' associated clinical data, therefore when the recording was taken it is associated with
+#' a clinical event date. The associated clinical entry for an alcohol consumption reading is a medcode = 27 for
+#' "alcohol consumption". 
+#' 
+#' There is an occasional crossover between clinical data and addication clinical data. For example, 
+#' a clinical record for non-smoker (medcode 60) may accompany an additional clinical data entity for
+#' alcohol consumption "No". 
+#'
+#' @param idList A vector or a list of patient ids.
+#' @param additionalDataDF The data frame of all patient clinical additional data. 
+#' @param clinicalDataDF The data frame of all patient clinical data.
+#'
+#' @return A data frame of the patient clinical data associated with alcohol consumption along with 
+#' units per day and start and stop date.
+#' @export
+#'
+#' @examples
+getAlcoholConsumptionData <- function(idList, additionalDataDF, clinicalDataDF) {
+  #gets all the BMI related entity lines from the additional clinical data
+  patientAcDT <- data.table::as.data.table(getEntityData(idList, alcoholConsumption, additionalDataDF))
+  
+  patientAcPatid <- getUniquePatidList(patientAcDT)
+  
+  colnames(patientAcDT) <- c("patid","enttype","adid","Alcohol_consumption","units_per_week","start_date","stop_date","data5","data6","data7")
+  patientAcDT$Alcohol_consumption[patientAcDT$Alcohol_consumption == "0"] <- "Data not entered"
+  patientAcDT$Alcohol_consumption[patientAcDT$Alcohol_consumption == "1"] <- "Yes"
+  patientAcDT$Alcohol_consumption[patientAcDT$Alcohol_consumption == "2"] <- "No"
+  patientAcDT$Alcohol_consumption[patientAcDT$Alcohol_consumption == "3"] <- "Ex drinker"
+  
+  #data1 column for the smoking status
+  patientAcMatrix <- trimws(as.matrix(patientAcDT))
+  cliniclDataMatrix <- trimws(as.matrix(clinicalDataDF))
+  counter <- 1
+  acDFList <- list()
+  for(i in 1:length(patientAcPatid)) {
+    indAcMatrix <- patientAcMatrix[patientAcMatrix[,c("patid")]==patientAcPatid[[i]],,drop=FALSE]
+    indClinicalMatrix <- cliniclDataMatrix[cliniclDataMatrix[,c("patid")]==patientAcPatid[[i]],,drop=FALSE]
+    indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("enttype")] == "5", ,drop=FALSE]
+    
+    if(nrow(indAcMatrix)==0) {
+      print(paste("There is no additional clinical data for patient", patientAcPatid[[i]], "Skipping this patient."))
+      next()
+    }
+    
+    if(nrow(indClinicalMatrix)==0) {
+      print(paste("There is no clinical data for patient", patientAcPatid[[i]], "Skipping this patient."))
+      next()
+    }
+    
+    if(nrow(indClinicalMatrix) != nrow(indAcMatrix)) {
+      adidSubset <- indClinicalMatrix$adid
+      indAcMatrix <- indAcMatrix[indAcMatrix[,c("adid")] %in% adidSubset, ]
+    }
+    
+    tempIndClinicalDF <- as.data.frame(indClinicalMatrix)
+    tempAcDF <- as.data.frame(indAcMatrix[,!(colnames(indAcMatrix) %in% c("patid","enttype","adid")),drop=FALSE])
+    
+    acDF <- cbind(tempIndClinicalDF, tempAcDF)
+    
+    acDFList[[counter]] <- acDF
+    counter <- counter + 1
+  }
+  patientAcDF <- do.call(rbind, acDFList)
+  return(patientAcDF)
+}
 
+#===============================================================================
 #' Returns the additional clinical data for a list of patients. 
 #'
 #' The function combines the entity, lookup data and adid from additional clinical data
@@ -345,8 +519,13 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
   
   if(tolower(entityString) == "smoking") {
     resultDF <- getSmokingData(idList, additionalClinicalDataDF, clinicalDataDF) 
+    resultDF <- addMedcodeDescription(resultDF, smokingMedcodeDescriptionList)
   } else if(tolower(entityString) == "bmi") {
     resultDF <- getBMIData(idList, additionalClinicalDataDF, clinicalDataDF) 
+    resultDF <- addMedcodeDescription(resultDF, bmiMedcodeDescriptionList)
+  } else if(tolower(entityString) == "alcoholconsumption") {
+    resultDF <- getAlcoholConsumptionData(idList, additionalClinicalDataDF, clinicalDataDF) 
+    resultDF <- addMedcodeDescription(resultDF, alcoholMedcodeDescriptionList)
   }
   else {
     print("Unrecognised entity type. Try one of the following:")
@@ -358,6 +537,8 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
 
 }
 
+
+#===============================================================================
 #' Title
 #'
 #' @param df
@@ -377,4 +558,32 @@ getUniquePatidList <- function(df) {
   }
 
   return(uniquePatIDList)
+}
+
+#===============================================================================
+
+#' Title
+#'
+#' @param dataDF 
+#' @param descriptionList 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+addMedcodeDescription <- function(dataDF, descriptionList) {
+  medcodeVector <- dataDF$medcode
+  descriptionVector <- rep("",length(medcodeVector))
+  
+  for(i in 1:length(descriptionVector)) {
+    medcode <- medcodeVector[i]
+    descriptionSubset <- descriptionList[descriptionList %in% medcode]
+    if( length(descriptionSubset)==1) {
+      descriptionNames <- names(descriptionSubset)
+      descriptionVector[i] <- descriptionNames
+    }
+  }
+  
+  dataDF <- cbind(dataDF, medcode_description=descriptionVector)
+  return(dataDF)
 }
