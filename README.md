@@ -9,6 +9,7 @@ The code is very simple to use. Once the R file is sourced, the user calls the g
 1) "smoking"
 2) "BMI"
 3) "alcoholConsumption"
+4) "exercise"
 
 For example, when passing "smoking":
 
@@ -32,8 +33,7 @@ The lists of medcode descriptions are loaded into the environment when the R cod
 alcoholMedcodeDescriptionList
 bmiMedcodeDescriptionList
 smokingMedcodeDescriptionList
+exerciseMedcodeDescriptionList
 ```
-
-
 
 Further information on how to use should be forth coming in a F1000 publication. 
