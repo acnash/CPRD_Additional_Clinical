@@ -6,6 +6,36 @@
 #neceessarily those of the UK National Health Service, the NIHR, or the
 #UK Department of Health. 
 
+exerciseMedcodeDescriptionList <- list(
+  `Exercise grading`=36,
+  `Enjoys moderate exercise`=13084,
+  `Health ed. - exercise`=5478,
+  `GPPAQ physical activity index: inactive`=96213,
+  `Enjoys light exercise`=13083,
+  `Exercise status screening`=19461,
+  `GPPAQ physical activity index: active`=96647,
+  `GPPAQ physical activity index: moderately inactive`=97179,
+  `Avoids even trivial exercise`=13087,
+  `Aerobic exercise 0 times/week`=22963,
+  `Aerobic exercise 3+ times/week`=19528,
+  `Less than 30 mins/day of at least mod int physc act >=5 week`=96913,
+  `Enjoys heavy exercise`=13085,
+  `30 mins/day of at least mod intensty physc activity >=5 week`=96646,
+  `GPPAQ physical activity index: moderately active`=95900,
+  `Exercise physically impossible`=17696,
+  `Aerobic exercise 2 times/week`=26525,
+  `Aerobic exercise 1 time/week`=26522,
+  `Anaerobic exercise 3+ times/wk`=26523,
+  `Anaerobic exercise 1 time/week`=26524,
+  `Level of physical activity`=106298,
+  `Advice about exercise`=18748,
+  `FITT activity level 0; no mod/vig activity of 20 mins duratn`=26528,
+  `FITT activity level 1; 1-4 occas of mod/vig activit in 4 wks`=26529,
+  `FITT activity level 3; 12+ occas of mod activity in 4 weeks`=48555,
+  `Avoids even trivial exercise`=10347,
+  `Takes inadequate exercise`=13086
+)
+
 alcoholMedcodeDescriptionList <- list(
   `Alcohol consumption`=27,
   `non-drinker alcohol`=4447,
@@ -268,10 +298,9 @@ getEntityData <- function(idList, entity, additionalDataDF) {
 #' 0 - data not entered, 1 - YES, 2 - NO, 3 - Ex smoker.  As CPRD is longitudinal, 
 #' a patient can have multiple values and is matched by the adid value between data. In most
 #' cases (for smoking) the entity == 4 smoking data has an equal number of clinical and additional
-#' clinical records. If there are fewer additional clinical records to clincal record, then the adid 
-#' values are matched and the returning data will have the number of rows matching the additional
-#' clinical data and not the clinical data. If there is no clinical or additional 
-#' clinical data then that patient is skipped.
+#' clinical records. If there are fewer additional clinical records to clinical record, then the adid 
+#' values are between the two data sets are matched. If there is no clinical or additional 
+#' clinical data then that patient is skipped. 
 #'
 #' @param idList A vector or a list of patient ids. 
 #' @param additionalDataDF The data frame of all patient clinical additional data. 
@@ -323,8 +352,8 @@ getSmokingData <- function(idList, additionalDataDF, clinicalDataDF) {
     }
     
     if(nrow(indClinicalMatrix) != nrow(indSmokingMatrix)) {
-      adidSubset <- indClinicalMatrix$adid
-      indSmokingMatrix <- indSmokingMatrix[indSmokingMatrix[,c("adid")] %in% adidSubset, ]
+      adidSubset <- indSmokingMatrix[,c("adid")]
+      indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("adid")] %in% adidSubset, ,drop=FALSE]
     }
     
     tempIndClinicalDF <- as.data.frame(indClinicalMatrix)
@@ -345,8 +374,9 @@ getSmokingData <- function(idList, additionalDataDF, clinicalDataDF) {
 #' The BMI/weight additional clinical data is combined with the clinical data of all those
 #' patients with a valid BMI/weight recording. The BMI/weight record is inline with the
 #' associated clinical data, therefore when the recording was taken is associated with
-#' a clinical event date. The associated clinical entry for a BMI reading is a medcode = 2 for
-#' "O/E - weight". 
+#' a clinical event date. If there are fewer additional clinical records to clinical record, then the adid 
+#' values are between the two data sets are matched. If there is no clinical or additional 
+#' clinical data then that patient is skipped. 
 #'
 #' @param idList A vector or a list of patient ids.
 #' @param additionalDataDF The data frame of all patient clinical additional data. 
@@ -386,8 +416,8 @@ getBMIData <- function(idList, additionalDataDF, clinicalDataDF) {
     }
     
     if(nrow(indClinicalMatrix) != nrow(indBMIMatrix)) {
-      adidSubset <- indClinicalMatrix$adid
-      indBMIMatrix <- indBMIMatrix[indBMIMatrix[,c("adid")] %in% adidSubset, ]
+      adidSubset <- indBMIMatrix[,c("adid")]
+      indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("adid")] %in% adidSubset, ,drop=FALSE]
     }
     
     tempIndClinicalDF <- as.data.frame(indClinicalMatrix)
@@ -408,12 +438,9 @@ getBMIData <- function(idList, additionalDataDF, clinicalDataDF) {
 #' The alcohol consumption additional clinical data is combined with the clinical data of all those
 #' patients with a valid alcohol consumption clinical record. The alcohol consumption record is inline with the
 #' associated clinical data, therefore when the recording was taken it is associated with
-#' a clinical event date. The associated clinical entry for an alcohol consumption reading is a medcode = 27 for
-#' "alcohol consumption". 
-#' 
-#' There is an occasional crossover between clinical data and addication clinical data. For example, 
-#' a clinical record for non-smoker (medcode 60) may accompany an additional clinical data entity for
-#' alcohol consumption "No". 
+#' a clinical event date. If there are fewer additional clinical records to clinical record, then the adid 
+#' values are between the two data sets are matched. If there is no clinical or additional 
+#' clinical data then that patient is skipped. 
 #'
 #' @param idList A vector or a list of patient ids.
 #' @param additionalDataDF The data frame of all patient clinical additional data. 
@@ -457,8 +484,8 @@ getAlcoholConsumptionData <- function(idList, additionalDataDF, clinicalDataDF) 
     }
     
     if(nrow(indClinicalMatrix) != nrow(indAcMatrix)) {
-      adidSubset <- indClinicalMatrix$adid
-      indAcMatrix <- indAcMatrix[indAcMatrix[,c("adid")] %in% adidSubset, ]
+      adidSubset <- indAcMatrix[,c("adid")]
+      indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("adid")] %in% adidSubset, ,drop=FALSE]
     }
     
     tempIndClinicalDF <- as.data.frame(indClinicalMatrix)
@@ -471,6 +498,75 @@ getAlcoholConsumptionData <- function(idList, additionalDataDF, clinicalDataDF) 
   }
   patientAcDF <- do.call(rbind, acDFList)
   return(patientAcDF)
+}
+
+#===============================================================================
+#' Returns the patient exercise status.
+#' 
+#' The exercise additional clinical data is combined with the clinical data of all those
+#' patients with a valid exercise clinical record. The exercise record is inline with the
+#' associated clinical data, therefore when the recording was taken it is associated with
+#' a clinical event date. If there are fewer additional clinical records to clinical record, then the adid 
+#' values are between the two data sets are matched. If there is no clinical or additional 
+#' clinical data then that patient is skipped. 
+#' . 
+#'
+#' @param idList A vector or a list of patient ids.
+#' @param additionalDataDF The data frame of all patient clinical additional data. 
+#' @param clinicalDataDF The data frame of all patient clinical data.
+#'
+#' @return A data frame of the patient clinical data associated with exercise.
+#' @export
+#'
+#' @examples
+getExerciseData <- function(idList, additionalDataDF, clinicalDataDF) {
+  #gets all the BMI related entity lines from the additional clinical data
+  patientExerciseDT <- data.table::as.data.table(getEntityData(idList, exercise, additionalDataDF))
+  
+  patientExercisePatid <- getUniquePatidList(patientExerciseDT)
+  
+  colnames(patientExerciseDT) <- c("patid","enttype","adid","Type_of_exercise","data2","data3","data4","data5","data6","data7")
+  patientExerciseDT$Type_of_exercise[patientExerciseDT$Type_of_exercise == "0"] <- "Data not entered"
+  patientExerciseDT$Type_of_exercise[patientExerciseDT$Type_of_exercise == "1"] <- "Inactive"
+  patientExerciseDT$Type_of_exercise[patientExerciseDT$Type_of_exercise == "2"] <- "Moderate"
+  patientExerciseDT$Type_of_exercise[patientExerciseDT$Type_of_exercise == "3"] <- "Vigorous"
+  patientExerciseDT$Type_of_exercise[patientExerciseDT$Type_of_exercise == "4"] <- "Gentle"
+  
+  #data1 column for the smoking status
+  patientExerciseMatrix <- trimws(as.matrix(patientExerciseDT))
+  cliniclDataMatrix <- trimws(as.matrix(clinicalDataDF))
+  counter <- 1
+  exerciseDFList <- list()
+  for(i in 1:length(patientExercisePatid)) {
+    indExerciseMatrix <- patientExerciseMatrix[patientExerciseMatrix[,c("patid")]==patientExercisePatid[[i]],,drop=FALSE]
+    indClinicalMatrix <- cliniclDataMatrix[cliniclDataMatrix[,c("patid")]==patientExercisePatid[[i]],,drop=FALSE]
+    indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("enttype")] == "30", ,drop=FALSE]
+    
+    if(nrow(indExerciseMatrix)==0) {
+      print(paste("There is no additional clinical data for patient", patientExercisePatid[[i]], "Skipping this patient."))
+      next()
+    }
+    
+    if(nrow(indClinicalMatrix)==0) {
+      print(paste("There is no clinical data for patient", patientExercisePatid[[i]], "Skipping this patient."))
+      next()
+    }
+    
+    if(nrow(indClinicalMatrix) != nrow(indExerciseMatrix)) {
+      adidSubset <- indExerciseMatrix[,c("adid")]
+      indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("adid")] %in% adidSubset, ,drop=FALSE]
+    }
+    
+    tempIndClinicalDF <- as.data.frame(indClinicalMatrix)
+    tempExerciseDF <- as.data.frame(indExerciseMatrix[,!(colnames(indExerciseMatrix) %in% c("patid","enttype","adid")),drop=FALSE])
+    
+    exerciseDF <- cbind(tempIndClinicalDF, tempExerciseDF)
+    
+    exerciseDFList[[counter]] <- exerciseDF
+    counter <- counter + 1
+  }
+  patientExerciseDF <- do.call(rbind, exerciseDFList)
+  return(patientExerciseDF)
 }
 
 #===============================================================================
@@ -526,7 +622,13 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
   } else if(tolower(entityString) == "alcoholconsumption") {
     resultDF <- getAlcoholConsumptionData(idList, additionalClinicalDataDF, clinicalDataDF) 
     resultDF <- addMedcodeDescription(resultDF, alcoholMedcodeDescriptionList)
+  } else if(tolower(entityString) == "exercise") {
+    resultDF <- getExerciseData(idList, additionalClinicalDataDF, clinicalDataDF) 
+    resultDF <- addMedcodeDescription(resultDF, exerciseMedcodeDescriptionList)
   }
+  #######
+  ##Add more entity statements here....
+  #######
   else {
     print("Unrecognised entity type. Try one of the following:")
     outputCurrentOutput()
