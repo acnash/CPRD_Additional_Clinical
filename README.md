@@ -5,6 +5,16 @@ An CPRD (Clinical Practice Research Datalink) data request will usually return a
 
 However, bringing all of this information together is difficult and there are few, if any, free scripts available to researcher. This R script retrieve patient clinical linked data to a number of patient characteristics e.g., smoking. The R script hasn't been packaged, it's easy to use, and should be relatively easy to expand for a typical R user with a little knowledge on the CPRD framework.
 
+## Software Reproducability 
+
+The CPRDLooksups scripts has an assigned RRID:SCR_018959 identifier and this code repository is supported by Zenodo <a href="https://zenodo.org/badge/latestdoi/286531968"><img src="https://zenodo.org/badge/286531968.svg" alt="DOI"></a>
+
+## Dependencies  
+
+The script requires the R data.table package. 
+
+## Instructions
+
 The code is very simple to use. Once the R file is sourced, the user calls the getEntityValue() per look up entity to yield a data frame of clinical and additional clinical records. The supported lookp entites are currently:
 1) "smoking"
 2) "BMI"
@@ -14,7 +24,7 @@ The code is very simple to use. Once the R file is sourced, the user calls the g
 For example, when passing "smoking":
 
 ```
-source("CPRDLookups.R")
+source("CPRDLooksups.R")
 additionalFiles <- "C:\\Users\\yewro\\Documents\\CPRD_Raw_Data\\head_Extract_Additional"
 clinicalFiles <- "C:\\Users\\yewro\\Documents\\CPRD_Raw_Data\\Clinical"
 additionalFileList <- list(additional=additionalFiles, clinical=clinicalFiles)
