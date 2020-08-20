@@ -774,9 +774,12 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
           and the folder for clinical files.")
   }
 
+  #additional clinical data is not required for ethnicity values
+  if(tolower(entityString) != "ethnicity") {
+    additionalClinicalDataDF <- getAdditionalCPRDData(additionalFileList$additional, idList)
+  }
   clinicalDataDF <- getClinicalData(additionalFileList$clinical, idList)
-  additionalClinicalDataDF <- getAdditionalCPRDData(additionalFileList$additional, idList)
-
+  
   if(is.null(clinicalDataDF) | is.null(additionalClinicalDataDF) == TRUE) {
     print("Could not find any clinical or additional clinical data for the patients. Returning NULL.")
     return(NULL)
@@ -797,7 +800,11 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
   } else if(tolower(ethnicityString) == "ethnicity") {
     resultDF <- getEthnicityData(idList, clinicalDataDF)
     #this might be empty!
-    resultDF <- addMedcodeDescription(resultDF, ethnicityMedcodeDescriptionList)
+    if(nrow(resultDF)>0) {
+      resultDF <- addMedcodeDescription(resultDF, ethnicityMedcodeDescriptionList)
+    } else {
+      print("Unable to find any ethnicity data.")
+    }
   }
   #######
   ##Add more entity statements here....
