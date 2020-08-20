@@ -44,6 +44,8 @@ alcoholMedcodeDescriptionList
 bmiMedcodeDescriptionList
 smokingMedcodeDescriptionList
 exerciseMedcodeDescriptionList
+ethnicityMedcodeDescriptionList
 ```
 
-Further information on how to use should be forth coming in a F1000 publication. 
+### Ethnicity data
+Ethnicity data is retrieved directly from the patient clinical data. A user need only specify `ethnicity` to retrieve ethnicity data. As with additional clinical data, we have begun to populate the script with medcode descriptions for ethnicity. Ethnicities are grouped according to the recommendations of the NHS into: White British, White Irish, Other White, White and Black Caribbean, White and Black African, White and Asian, Other Mixed, Indian, Pakistani, Bangladeshi, Other Asian, Black Caribbean, Black African, Other Black, Chinese, any other ethnic group. 
