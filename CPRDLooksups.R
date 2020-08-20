@@ -140,6 +140,143 @@ smokingMedcodeDescriptionList <- list(
   `Passive smoker`=13351
 )
 
+ethnicityMedcodeDescriptionList <- list(
+  `White British`=12681, 
+  `White British`=12352, 
+  `White British`=98111, 
+  `White British`=40102, 
+  `White British`=110432, 
+  `White British`=28887, 
+  `White British`=12436, 
+  `White British`=12446,
+  `White Irish`=110687, 
+  `White Irish`=12532, 
+  `White Irish`=110556, 
+  `White Irish`=55223, 
+  `White Irish`=42294, 
+  `White Irish`=98213,
+  `Other White`=110407, 
+  `Other White`=12467, 
+  `Other White`=55113, 
+  `Other White`=25422, 
+  `Other White`=42290, 
+  `Other White`=12355, 
+  `Other White`=26341, 
+  `Other White`=12444, 
+  `Other White`=28866, 
+  `Other White`=26391, 
+  `Other White`=47074, 
+  `Other White`=46956, 
+  `Other White`=110694,
+  `Other White`=110465,
+  `Other White`=12412, 
+  `Other White`=12591, 
+  `Other White`=28936, 
+  `Other White`=26310, 
+  `Other White`=110695, 
+  `Other White`=12421, 
+  `Other White`=12351,
+  
+  `White and Black Caribbean`=110661, 
+  `White and Black Caribbean`=12742,
+  
+  
+  `White and Black African`=110651, 
+  `White and Black African`=40110, 
+  `White and Black African`=12437,
+  
+  
+  `White and Asian`=110471, 
+  `White and Asian`=12638,
+  `White and Asian`=110652,
+  `White and Asian`=32401,
+  `White and Asian`=12706,
+  
+  
+  `Other Mixed`=32408,
+  `Other Mixed`=46056,
+  `Other Mixed`=110536,
+  `Other Mixed`=12795,
+  `Other Mixed`=110696,
+  `Other Mixed`=35459,
+  `Other Mixed`=12696,
+  `Other Mixed`=28900,
+  `Other Mixed`=12873,
+  `Other Mixed`=32420,
+  `Other Mixed`=40096,
+  `Other Mixed`=49940,
+  
+  
+  `Indian`=12760, 
+  `Indian`=12414, 
+  `Indian`=64133, 
+  `Indian`=110422, 
+  `Indian`=110477,  
+  `Indian`=12887,
+  
+  `Pakistani`=110538, 
+  `Pakistani`=12460,
+  
+  `Bangladeshi`=110729,
+  
+  `Other Asian`=110855, 
+  `Other Asian`=12513, 
+  `Other Asian`=110425, 
+  `Other Asian`=28935, 
+  `Other Asian`=110555,
+  `Other Asian`=12730, 
+  `Other Asian`=12473, 
+  `Other Asian`=47077, 
+  `Other Asian`=12719, 
+  `Other Asian`=12420, 
+  `Other Asian`=12668, 
+  `Other Asian`=12653,
+  
+  `Black Caribbean`=12432,
+  
+  `Black African`=110655, 
+  `Black African`=47028, 
+  `Black African`=12350, 
+  `Black African`=12443, 
+  `Black African`=32886,
+  
+  `Other Black`=108121, 
+  `Other Black`=40097, 
+  `Other Black`=46047, 
+  `Other Black`=32389,
+  
+ `Chinese`=111064, 
+  `Chinese`=47005, 
+  `Chinese`=12468, 
+  `Chinese`=110922,
+  
+  `Any other ethnic group`=32399,
+  `Any other ethnic group`=41214,
+  `Any other ethnic group`=110742,
+  `Any other ethnic group`=12434, 
+  `Any other ethnic group`=111806, 
+  `Any other ethnic group`=71425, 
+  `Any other ethnic group`=45964, 
+  `Any other ethnic group`=46964, 
+  `Any other ethnic group`=12756, 
+  `Any other ethnic group`=96789, 
+  `Any other ethnic group`=25937,
+  `Any other ethnic group`=46752, 
+  `Any other ethnic group`=12746, 
+  `Any other ethnic group`=12757, 
+  `Any other ethnic group`=32778, 
+  `Any other ethnic group`=45008, 
+  `Any other ethnic group`=46059, 
+  `Any other ethnic group`=110646, 
+  `Any other ethnic group`=32413, 
+  `Any other ethnic group`=110780, 
+  `Any other ethnic group`=12608, 
+  `Any other ethnic group`=26246, 
+  `Any other ethnic group`=26455, 
+  `Any other ethnic group`=30280, 
+  `Any other ethnic group`=47401
+)
+
 
 BMI <- 13
 smoking <- 4
@@ -148,6 +285,7 @@ hdlRatio <- 338
 ethnicity <- 496
 familyHistoryOf <- 87
 exercise <- 30
+ethnicity <- 496
 
 #A list of search terms. Caps sensitive at the moment.
 outputCurrentOutput <- function() {
@@ -158,6 +296,7 @@ outputCurrentOutput <- function() {
   print("ethnicity")
   print("familyHistoryOf")
   print("exercise")
+  print("ethnicity")
 }
 
 #===============================================================================
@@ -345,12 +484,9 @@ getSmokingData <- function(idList, additionalDataDF, clinicalDataDF) {
       next()
     }
 
-
     indClinicalMatrix <- cliniclDataMatrix[cliniclDataMatrix[,c("patid")]==patientSmokingPatid[[i]],,drop=FALSE]
     indClinicalMatrix <- indClinicalMatrix[indClinicalMatrix[,c("enttype")] == "4", ,drop=FALSE]
     #indClinicalMatrix <- indClinicalMatrix[complete.cases(indClinicalMatrix),]
-
-
 
     if(nrow(indClinicalMatrix)==0) {
       print(paste("There is no clinical data for patient", patientSmokingPatid[[i]], "Skipping this patient."))
@@ -586,6 +722,23 @@ getExerciseData <- function(idList, additionalDataDF, clinicalDataDF) {
 }
 
 #===============================================================================
+
+#' Returns ethnicity data from clinical data. 
+#'
+#' @param idList 
+#' @param clinicalDataDF 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+getEthnicityData <- function(idList, clinicalDataDF) {
+  ethnicityDF <- subset(clinicalDataDF, clinicalDataDF$medcode %in% unlist(ethnicityMedcodeDescriptionList))
+  
+  return(ethnicityDF)
+}
+
+#===============================================================================
 #' Returns the additional clinical data for a list of patients.
 #'
 #' The function combines the entity, lookup data and adid from additional clinical data
@@ -641,6 +794,10 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
   } else if(tolower(entityString) == "exercise") {
     resultDF <- getExerciseData(idList, additionalClinicalDataDF, clinicalDataDF)
     resultDF <- addMedcodeDescription(resultDF, exerciseMedcodeDescriptionList)
+  } else if(tolower(ethnicityString) == "ethnicity") {
+    resultDF <- getEthnicityData(idList, clinicalDataDF)
+    #this might be empty!
+    resultDF <- addMedcodeDescription(resultDF, ethnicityMedcodeDescriptionList)
   }
   #######
   ##Add more entity statements here....
