@@ -245,7 +245,7 @@ ethnicityMedcodeDescriptionList <- list(
   `Other Black`=46047, 
   `Other Black`=32389,
   
- `Chinese`=111064, 
+  `Chinese`=111064, 
   `Chinese`=47005, 
   `Chinese`=12468, 
   `Chinese`=110922,
@@ -277,6 +277,8 @@ ethnicityMedcodeDescriptionList <- list(
   `Any other ethnic group`=47401
 )
 
+hdlldlRatioMedcodeDescriptionList <- list()
+
 
 BMI <- 13
 smoking <- 4
@@ -286,6 +288,7 @@ ethnicity <- 496
 familyHistoryOf <- 87
 exercise <- 30
 ethnicity <- 496
+hdlldlRatio <- 163 #338
 
 #A list of search terms. Caps sensitive at the moment.
 outputCurrentOutput <- function() {
@@ -297,6 +300,7 @@ outputCurrentOutput <- function() {
   print("familyHistoryOf")
   print("exercise")
   print("ethnicity")
+  print("hdlldlRatio")
 }
 
 #===============================================================================
@@ -502,14 +506,6 @@ getSmokingData <- function(idList, additionalDataDF, clinicalDataDF) {
 
     tempIndClinicalDF <- as.data.frame(indClinicalMatrix)
     tempSmokingDF <- as.data.frame(indSmokingMatrix[,!(colnames(indSmokingMatrix) %in% c("patid","enttype","adid")),drop=FALSE])
-
-    if(nrow(tempIndClinicalDF) !=  nrow(tempSmokingDF)) {
-      print("Error here")
-      print(tempIndClinicalDF)
-      print("-----------------------------------------------------------------")
-      print(tempSmokingDF)
-      stop()
-    }
 
     smokingDF <- cbind(tempIndClinicalDF, tempSmokingDF)
 
@@ -724,11 +720,15 @@ getExerciseData <- function(idList, additionalDataDF, clinicalDataDF) {
 #===============================================================================
 
 #' Returns ethnicity data from clinical data. 
+#' 
+#' Patient ethnicity is stored in clinical data only. This function will turn all
+#' clinical data rows with a match for enttype = 496. It is clear having looked
+#' through many records that some patients have multiple recordings of ethnicity.
 #'
 #' @param idList 
 #' @param clinicalDataDF 
 #'
-#' @return
+#' @return A subset data frame of clinicalDataDF of all those rows where enttype = 496.
 #' @export
 #'
 #' @examples
@@ -736,6 +736,23 @@ getEthnicityData <- function(idList, clinicalDataDF) {
   ethnicityDF <- subset(clinicalDataDF, clinicalDataDF$medcode %in% unlist(ethnicityMedcodeDescriptionList))
   
   return(ethnicityDF)
+}
+
+#===============================================================================
+#' Title
+#'
+#' @param idList 
+#' @param additionalDataDF 
+#' @param clinicalDataDF 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+getHDLLDLRatioData <- function(idList, additionalDataDF, clinicalDataDF) {
+  patientRatioDT <- data.table::as.data.table(getEntityData(idList, hdlldlRatio, additionalDataDF))
+  
+  patientRatioPatid <- getUniquePatidList(patientRatioDT)
 }
 
 #===============================================================================
@@ -797,7 +814,7 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
   } else if(tolower(entityString) == "exercise") {
     resultDF <- getExerciseData(idList, additionalClinicalDataDF, clinicalDataDF)
     resultDF <- addMedcodeDescription(resultDF, exerciseMedcodeDescriptionList)
-  } else if(tolower(ethnicityString) == "ethnicity") {
+  } else if(tolower(entityString) == "ethnicity") {
     resultDF <- getEthnicityData(idList, clinicalDataDF)
     #this might be empty!
     if(nrow(resultDF)>0) {
@@ -805,6 +822,9 @@ getEntityValue <- function(entityString, additionalFileList, idList=NULL) {
     } else {
       print("Unable to find any ethnicity data.")
     }
+  } else if(tolower(entityString) == "hdlldlratio") {
+    resultDF <- getHDLLDLRatioData(idList, additionalClinicalDataDF, clinicalDataDF)
+    resultDF <- addMedcodeDescription(resultDF, hdlldlRatioMedcodeDescriptionList)
   }
   #######
   ##Add more entity statements here....
