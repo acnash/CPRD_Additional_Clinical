@@ -32,7 +32,7 @@ resultDF <- getEntityValue("smoking", additionalFileList, idList)
 ```
 The `idList` is a list or vector of CPRD patient IDs (patid). The code loads the CPRD clinical and CPRD additional clinical txt files.  
 
-The returned data frame will include clinical data linked to additional clinical data. For example, the output for a "smoking" lookup entity might look similar to (IDs removed & all dates fabricated):
+The returned data frame will include clinical data linked to additional clinical data. For example, the output for a "smoking" lookup entity might look similar to **(IDs and all dates fabricated)**:
 
 ![Image of smoking output](https://github.com/acnash/CPRD_Additional_Clinical/blob/master/smoking.PNG)
 
