@@ -1,5 +1,5 @@
 # CPRD_Additional_Clinical
-R scripts and information concerning the retrieval of patient additional clinical data. 
+R scripts and information concerning the retrieval of patient additional clinical data. **Please note: this is a live project, with new more R code and CPRD functionalist being added every couple of weeks.**
 
 An CPRD (Clinical Practice Research Datalink) data request will usually return a primary care clinic file(s) and corresponding additional clinic file(s). The clinic files hold the patient to GP consultation concerns (a medical diagnosis and/or complaint) along with anything prescribed by the GP and on the NHS (drugs, supports, special foods etc). Particular patient characteristics that may be of a medical concern are recorded by the GP into the additional clinic file and linked back into the clinic file by way of patid, adid and the enttype (event type). Using this link between the two tables, a series of look up files and the medcodes provided by CPRD, a researcher could, for example, decode the complete smoking history, BMI records, family history of a patient, and any blood works of patient. 
 
