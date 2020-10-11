@@ -1,5 +1,5 @@
 # CPRD_Additional_Clinical
-R scripts and information concerning the retrieval of patient additional clinical data. **Please note: this is a live project, with new more R code and CPRD functionalist being added every couple of weeks.**
+R scripts and information concerning the retrieval of patient additional clinical data. **Please note: this is a live project, with new R code and CPRD properties being added when possible.**
 
 Please see the F1000 short-methods publication to learn more: <a href="http://dx.doi.org/10.12688/f1000research.26228.1">10.12688/f1000research.26228.1</a>
 
