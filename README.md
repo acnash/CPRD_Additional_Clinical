@@ -1,4 +1,10 @@
 # CPRD_Additional_Clinical
+
+## Notes
+A new release is under development and is currently being tested. We'll be providing a multi-core option to help speed up data retrieval. 
+
+## Introduction
+
 R scripts and information concerning the retrieval of patient additional clinical data. **Please note: this is a live project, with new R code and CPRD properties being added when possible.**
 
 Please see the F1000 short-methods publication to learn more: <a href="http://dx.doi.org/10.12688/f1000research.26228.1">10.12688/f1000research.26228.1</a>
